@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\UserController;
 use ApiPlatform\Core\Annotation\ApiFilter;
@@ -16,6 +18,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * @ApiResource(
  * normalizationContext={"groups"={"lire"}},
  * denormalizationContext={"groups"={"ecrire"}},
+ * 
+ * normalizationContext={"groups"={"readcompte"}},
+ * denormalizationContext={"groups"={"writecompte"}},
+ * 
  * collectionOperations={
  * 
  * 
@@ -49,14 +55,17 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 class User implements UserInterface
 {
     /**
+     * 
      * @ORM\Id()
      * @Groups({"lire", "ecrire"})
+     * @Groups({"readcompte", "writecompte"})
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
+     * @Groups({"readcompte", "writecompte"})
      * @Groups({"lire", "ecrire"})
      * @ORM\Column(type="string", length=180, unique=true)
      */
@@ -70,18 +79,21 @@ class User implements UserInterface
 
     /**
      * @var string The hashed password
+     * @Groups({"readcompte", "writecompte"})
      * @Groups({"lire", "ecrire"})
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
+     * @Groups({"readcompte", "writecompte"})
      * @Groups({"lire", "ecrire"})
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $isActive;
 
     /**
+     * @Groups({"readcompte", "writecompte"})
      * @Groups({"lire", "ecrire"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -89,15 +101,32 @@ class User implements UserInterface
 
     /**
      * @Groups({"lire", "ecrire"})
+     * @Groups({"readcompte", "writecompte"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users")
      */
     private $role;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="users")
+     */
+    private $partenaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="user")
+     */
+    private $depots;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="user")
+     */
+    private $comptes;
 
     public function __construct()
     {
 
         $this->isActive = true;
+        $this->depots = new ArrayCollection();
+        $this->comptes = new ArrayCollection();
 
     }
 
@@ -211,6 +240,78 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
 
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getUser() === $this) {
+                $depot->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Compte[]
+     */
+    public function getComptes(): Collection
+    {
+        return $this->comptes;
+    }
+
+    public function addCompte(Compte $compte): self
+    {
+        if (!$this->comptes->contains($compte)) {
+            $this->comptes[] = $compte;
+            $compte->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompte(Compte $compte): self
+    {
+        if ($this->comptes->contains($compte)) {
+            $this->comptes->removeElement($compte);
+            // set the owning side to null (unless already changed)
+            if ($compte->getUser() === $this) {
+                $compte->setUser(null);
+            }
+        }
+
+        return $this;
+    }
 
 }

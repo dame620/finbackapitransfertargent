@@ -2,11 +2,42 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\DepotController;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ * collectionOperations={
+ * "POST"={
+ *     "controller"=DepotController::class,
+ *     "access_control"="is_granted('POST', object)",
+ * 
+ *      },
+ * 
+ * "GETALLUSER"={
+ * "method"="GET",
+ *
+ *   }
+ * },
+ * 
+ * itemOperations={
+ *    
+ * "recuperationadmin"={
+ *      "method"="GET",
+ *      
+ * },
+ * 
+ * "PUT"={
+ *      "access_control"="is_granted('EDIT', object)",
+ *      "controller"=DepotController::class,
+ * },
+ * }
+ *
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\DepotRepository")
  */
 class Depot
@@ -19,6 +50,7 @@ class Depot
     private $id;
 
     /**
+     * @Groups({"readcompte", "writecompte"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $montantdepot;
@@ -27,6 +59,24 @@ class Depot
      * @ORM\Column(type="date", nullable=true)
      */
     private $datedepot;
+
+ 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depots")
+     */
+    private $compte;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots")
+     */
+    private $user;
+
+    public function __construct(){ 
+
+        $this->datedepot = new \DateTime();
+
+       }
+
 
     public function getId(): ?int
     {
@@ -53,6 +103,31 @@ class Depot
     public function setDatedepot(?\DateTimeInterface $datedepot): self
     {
         $this->datedepot = $datedepot;
+
+        return $this;
+    }
+
+
+    public function getCompte(): ?Compte
+    {
+        return $this->compte;
+    }
+
+    public function setCompte(?Compte $compte): self
+    {
+        $this->compte = $compte;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

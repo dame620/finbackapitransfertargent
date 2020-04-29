@@ -23,6 +23,7 @@ class Role
     private $id;
 
     /**
+     * @Groups({"readcompte", "writecompte"})
      * @Groups({"lire", "ecrire"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
