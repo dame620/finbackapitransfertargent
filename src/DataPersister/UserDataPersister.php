@@ -37,6 +37,11 @@ class UserDataPersister implements DataPersisterInterface
     public function persist($data)
 
       {
+
+        //recuperation de l id du user partenaire avant flush dans la base de donné 
+
+        $idpartenaire = $data->getPartenaire()->getusers()[0]->getId();
+       // dd($idpartenaire);
      
        //$term = $this->repocont->findBy(['id'=>1]);
     
@@ -54,8 +59,12 @@ class UserDataPersister implements DataPersisterInterface
         $this->entityManager->persist($data);
         $this->entityManager->flush();
 
-       
+       if($idpartenaire == null){
+
         return new JsonResponse($newtexterme);
+
+       }
+        
        }
 
     public function remove($data)

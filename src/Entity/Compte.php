@@ -51,6 +51,7 @@ class Compte
     private $id;
 
     /**
+     * @Groups({"readdepot", "writedepot"})
      * @Groups({"readcompte", "writecompte"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -74,6 +75,7 @@ class Compte
     private $depots;
 
     /**
+     * @Groups({"readcompte", "writecompte"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comptes")
      */
     private $user;

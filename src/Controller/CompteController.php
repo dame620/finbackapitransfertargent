@@ -69,6 +69,11 @@ $passwordusers = $userpartenaire->getPassword();
 //encodage du mot de passe
 $userpartenaire->setPassword($this->encoder->encodePassword($userpartenaire, $passwordusers));
 
+//recuperation du depot lors de la creation du compte c
+
+$depot = $data->getDepots()[0];
+//passer le user depot comme le user connecté
+$userdepot=$depot->setUser($userconnecte);
 
 
 

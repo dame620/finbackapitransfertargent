@@ -11,6 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
+ * 
+ *  normalizationContext={"groups"={"readdepot"}},
+ *  denormalizationContext={"groups"={"writedepot"}},
+ * 
  * collectionOperations={
  * "POST"={
  *     "controller"=DepotController::class,
@@ -43,6 +47,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Depot
 {
     /**
+     * @Groups({"readdepot", "writedepot"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -50,23 +55,28 @@ class Depot
     private $id;
 
     /**
+     * @Groups({"readdepot", "writedepot"})
      * @Groups({"readcompte", "writecompte"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $montantdepot;
 
     /**
+     * @Groups({"readdepot", "writedepot"})
      * @ORM\Column(type="date", nullable=true)
      */
     private $datedepot;
 
  
     /**
+     * @Groups({"readdepot", "writedepot"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depots")
      */
     private $compte;
 
     /**
+     * @Groups({"readcompte", "writecompte"})
+     * @Groups({"readdepot", "writedepot"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots")
      */
     private $user;

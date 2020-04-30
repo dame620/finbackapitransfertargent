@@ -65,6 +65,7 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Groups({"readdepot", "writedepot"})
      * @Groups({"readcompte", "writecompte"})
      * @Groups({"lire", "ecrire"})
      * @ORM\Column(type="string", length=180, unique=true)

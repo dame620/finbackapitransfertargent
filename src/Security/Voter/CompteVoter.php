@@ -21,7 +21,7 @@ class CompteVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-       // dd($user);
+       //dd($user);
         // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
