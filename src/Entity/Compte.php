@@ -51,6 +51,7 @@ class Compte
     private $id;
 
     /**
+     * @Groups({"readaffectation", "writeaffectation"})
      * @Groups({"readdepot", "writedepot"})
      * @Groups({"readcompte", "writecompte"})
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -86,6 +87,23 @@ class Compte
      */
     private $partenaire;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="compte")
+     */
+    private $affectations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="compteenvoi")
+     */
+    private $transactionenvois;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="compteretrait")
+     */
+    private $transactionretraits;
+
+   
+
     public function __construct()
     {
         $a = "wra";
@@ -95,6 +113,10 @@ class Compte
         $this->createat = new \DateTime();
         $this->users = new ArrayCollection();
         $this->depots = new ArrayCollection();
+        $this->affectations = new ArrayCollection();
+        $this->transactionenvois = new ArrayCollection();
+        $this->transactionretraits = new ArrayCollection();
+        
     }
 
     public function getId(): ?int
@@ -193,4 +215,100 @@ class Compte
 
         return $this;
     }
+
+    /**
+     * @return Collection|Affectation[]
+     */
+    public function getAffectations(): Collection
+    {
+        return $this->affectations;
+    }
+
+    public function addAffectation(Affectation $affectation): self
+    {
+        if (!$this->affectations->contains($affectation)) {
+            $this->affectations[] = $affectation;
+            $affectation->setCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffectation(Affectation $affectation): self
+    {
+        if ($this->affectations->contains($affectation)) {
+            $this->affectations->removeElement($affectation);
+            // set the owning side to null (unless already changed)
+            if ($affectation->getCompte() === $this) {
+                $affectation->setCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactionenvois(): Collection
+    {
+        return $this->transactionenvois;
+    }
+
+    public function addTransactionenvois(Transaction $transactionenvois): self
+    {
+        if (!$this->transactionenvois->contains($transactionenvois)) {
+            $this->transactionenvois[] = $transactionenvois;
+            $transactionenvois->setCompteenvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionenvois(Transaction $transactionenvois): self
+    {
+        if ($this->transactionenvois->contains($transactionenvois)) {
+            $this->transactionenvois->removeElement($transactionenvois);
+            // set the owning side to null (unless already changed)
+            if ($transactionenvois->getCompteenvoi() === $this) {
+                $transactionenvois->setCompteenvoi(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactionretraits(): Collection
+    {
+        return $this->transactionretraits;
+    }
+
+    public function addTransactionretrait(Transaction $transactionretrait): self
+    {
+        if (!$this->transactionretraits->contains($transactionretrait)) {
+            $this->transactionretraits[] = $transactionretrait;
+            $transactionretrait->setCompteretrait($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionretrait(Transaction $transactionretrait): self
+    {
+        if ($this->transactionretraits->contains($transactionretrait)) {
+            $this->transactionretraits->removeElement($transactionretrait);
+            // set the owning side to null (unless already changed)
+            if ($transactionretrait->getCompteretrait() === $this) {
+                $transactionretrait->setCompteretrait(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
+   
 }

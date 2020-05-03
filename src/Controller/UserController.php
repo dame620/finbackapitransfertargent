@@ -28,6 +28,15 @@ protected $tokenStorage;
             );
             $data->eraseCredentials();
          }
+
+         $partuserconnecte = $this->tokenStorage->getToken()->getUser()->getPartenaire();
+
+         if($partuserconnecte!==null){
+
+            $data->setPartenaire($partuserconnecte);
+         }
+       
+
         return $data;
     }
 }

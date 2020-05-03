@@ -2,11 +2,40 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\TransactionController;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
- * @ApiResource()
+ * @ApiFilter(SearchFilter::class, properties={"code": "exact"})
+ * @ApiResource(
+ * collectionOperations={
+ * "POST"={
+ *     "controller"=TransactionController::class,
+ *    
+ *     
+ *      },
+ * 
+ * "GETALL"={
+ * "method"="GET",
+ *   }
+ * },
+ * 
+ * itemOperations={
+ *    
+ * "recuperation"={
+ *      "method"="GET",
+ * },
+ * 
+ * "PUT"={
+ *     "controller"=TransactionController::class,
+ *     "access_control"="is_granted('EDIT', object)", 
+ * },
+ * }
+ * 
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
 class Transaction
@@ -39,7 +68,7 @@ class Transaction
     private $nomdestinataire;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $telemetteur;
 
@@ -72,6 +101,41 @@ class Transaction
      * @ORM\Column(type="integer", nullable=true)
      */
     private $partetat;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactionenvois")
+     */
+    private $compteenvoi;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactionretraits")
+     */
+    private $compteretrait;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactionenvois")
+     */
+    private $userenvoi;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactionretraits")
+     */
+    private $userretrait;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $cniemetteur;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $cnidestinataire;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $statu;
 
     public function getId(): ?int
     {
@@ -206,6 +270,90 @@ class Transaction
     public function setPartetat(?int $partetat): self
     {
         $this->partetat = $partetat;
+
+        return $this;
+    }
+
+    public function getCompteenvoi(): ?Compte
+    {
+        return $this->compteenvoi;
+    }
+
+    public function setCompteenvoi(?Compte $compteenvoi): self
+    {
+        $this->compteenvoi = $compteenvoi;
+
+        return $this;
+    }
+
+    public function getCompteretrait(): ?Compte
+    {
+        return $this->compteretrait;
+    }
+
+    public function setCompteretrait(?Compte $compteretrait): self
+    {
+        $this->compteretrait = $compteretrait;
+
+        return $this;
+    }
+
+    public function getUserenvoi(): ?User
+    {
+        return $this->userenvoi;
+    }
+
+    public function setUserenvoi(?User $userenvoi): self
+    {
+        $this->userenvoi = $userenvoi;
+
+        return $this;
+    }
+
+    public function getUserretrait(): ?User
+    {
+        return $this->userretrait;
+    }
+
+    public function setUserretrait(?User $userretrait): self
+    {
+        $this->userretrait = $userretrait;
+
+        return $this;
+    }
+
+    public function getCniemetteur(): ?int
+    {
+        return $this->cniemetteur;
+    }
+
+    public function setCniemetteur(?int $cniemetteur): self
+    {
+        $this->cniemetteur = $cniemetteur;
+
+        return $this;
+    }
+
+    public function getCnidestinataire(): ?int
+    {
+        return $this->cnidestinataire;
+    }
+
+    public function setCnidestinataire(?int $cnidestinataire): self
+    {
+        $this->cnidestinataire = $cnidestinataire;
+
+        return $this;
+    }
+
+    public function getStatu(): ?bool
+    {
+        return $this->statu;
+    }
+
+    public function setStatu(?bool $statu): self
+    {
+        $this->statu = $statu;
 
         return $this;
     }

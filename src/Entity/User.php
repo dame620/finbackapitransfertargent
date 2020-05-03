@@ -65,6 +65,7 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Groups({"readaffectation", "writeaffectation"})
      * @Groups({"readdepot", "writedepot"})
      * @Groups({"readcompte", "writecompte"})
      * @Groups({"lire", "ecrire"})
@@ -122,12 +123,39 @@ class User implements UserInterface
      */
     private $comptes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="user")
+     */
+    private $affectations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="useraffecteur")
+     */
+    private $secondaffectations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="userenvoi")
+     */
+    private $transactionenvois;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="userretrait")
+     */
+    private $transactionretraits;
+
+    
+
     public function __construct()
     {
 
         $this->isActive = true;
         $this->depots = new ArrayCollection();
         $this->comptes = new ArrayCollection();
+        $this->affectations = new ArrayCollection();
+        $this->secondaffectations = new ArrayCollection();
+        $this->transactionenvois = new ArrayCollection();
+        $this->transactionretraits = new ArrayCollection();
+      
 
     }
 
@@ -314,5 +342,131 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|Affectation[]
+     */
+    public function getAffectations(): Collection
+    {
+        return $this->affectations;
+    }
+
+    public function addAffectation(Affectation $affectation): self
+    {
+        if (!$this->affectations->contains($affectation)) {
+            $this->affectations[] = $affectation;
+            $affectation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffectation(Affectation $affectation): self
+    {
+        if ($this->affectations->contains($affectation)) {
+            $this->affectations->removeElement($affectation);
+            // set the owning side to null (unless already changed)
+            if ($affectation->getUser() === $this) {
+                $affectation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Affectation[]
+     */
+    public function getSecondaffectations(): Collection
+    {
+        return $this->secondaffectations;
+    }
+
+    public function addSecondaffectation(Affectation $secondaffectation): self
+    {
+        if (!$this->secondaffectations->contains($secondaffectation)) {
+            $this->secondaffectations[] = $secondaffectation;
+            $secondaffectation->setUseraffecteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSecondaffectation(Affectation $secondaffectation): self
+    {
+        if ($this->secondaffectations->contains($secondaffectation)) {
+            $this->secondaffectations->removeElement($secondaffectation);
+            // set the owning side to null (unless already changed)
+            if ($secondaffectation->getUseraffecteur() === $this) {
+                $secondaffectation->setUseraffecteur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactionenvois(): Collection
+    {
+        return $this->transactionenvois;
+    }
+
+    public function addTransactionenvois(Transaction $transactionenvois): self
+    {
+        if (!$this->transactionenvois->contains($transactionenvois)) {
+            $this->transactionenvois[] = $transactionenvois;
+            $transactionenvois->setUserenvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionenvois(Transaction $transactionenvois): self
+    {
+        if ($this->transactionenvois->contains($transactionenvois)) {
+            $this->transactionenvois->removeElement($transactionenvois);
+            // set the owning side to null (unless already changed)
+            if ($transactionenvois->getUserenvoi() === $this) {
+                $transactionenvois->setUserenvoi(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactionretraits(): Collection
+    {
+        return $this->transactionretraits;
+    }
+
+    public function addTransactionretrait(Transaction $transactionretrait): self
+    {
+        if (!$this->transactionretraits->contains($transactionretrait)) {
+            $this->transactionretraits[] = $transactionretrait;
+            $transactionretrait->setUserretrait($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionretrait(Transaction $transactionretrait): self
+    {
+        if ($this->transactionretraits->contains($transactionretrait)) {
+            $this->transactionretraits->removeElement($transactionretrait);
+            // set the owning side to null (unless already changed)
+            if ($transactionretrait->getUserretrait() === $this) {
+                $transactionretrait->setUserretrait(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
 
 }
