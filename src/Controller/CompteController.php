@@ -54,7 +54,7 @@ class CompteController extends AbstractController
        $data->setSoldecompte( $montdepo);
       // $firstsoldecompte = $data->getSoldecompte();
       $firstsoldecompte = $data->getSoldecompte();
-
+      //dd($firstsoldecompte);
         if($firstsoldecompte < 500000 ){
              throw new Exception("le solde doit etre superieur a 500000");
         }

@@ -6,11 +6,16 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Controller\TransactionController;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
- * @ApiFilter(SearchFilter::class, properties={"code": "exact"})
+ * 
  * @ApiResource(
+ * 
+ *  normalizationContext={"groups"={"readtransaction"}},
+ *  denormalizationContext={"groups"={"writetransaction"}},
+ * 
  * collectionOperations={
  * "POST"={
  *     "controller"=TransactionController::class,
@@ -41,6 +46,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 class Transaction
 {
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -48,94 +54,126 @@ class Transaction
     private $id;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $montanttransaction;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nomemmeteur;
 
     /**
+     * @ApiFilter(SearchFilter::class, properties={"code": "exact"})
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $code;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nomdestinataire;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $telemetteur;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $teldestinataire;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $frais;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $partenvoyeur;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $partretrait;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $partsysteme;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $partetat;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactionenvois")
      */
     private $compteenvoi;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactionretraits")
      */
     private $compteretrait;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactionenvois")
      */
     private $userenvoi;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactionretraits")
      */
     private $userretrait;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $cniemetteur;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="integer", nullable=true)
      */
     private $cnidestinataire;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $statu;
+
+    /**
+     * @Groups({"readtransaction", "writetransaction"})
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $datetrans;
+
+
+    public function __construct()
+    {
+        $this->datetrans = new \DateTime();
+
+    }
 
     public function getId(): ?int
     {
@@ -354,6 +392,18 @@ class Transaction
     public function setStatu(?bool $statu): self
     {
         $this->statu = $statu;
+
+        return $this;
+    }
+
+    public function getDatetrans(): ?\DateTimeInterface
+    {
+        return $this->datetrans;
+    }
+
+    public function setDatetrans(?\DateTimeInterface $datetrans): self
+    {
+        $this->datetrans = $datetrans;
 
         return $this;
     }

@@ -21,6 +21,7 @@ class Partenaire
 {
     /**
      * @ORM\Id()
+     * @Groups({"readcompte", "writecompte"})
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */

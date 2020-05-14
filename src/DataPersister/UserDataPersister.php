@@ -1,6 +1,7 @@
 <?php
 namespace App\DataPersister;
 use App\Entity\Compte;
+use App\Repository\RoleRepository;
 use App\Repository\ContratRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,11 +14,13 @@ class UserDataPersister implements DataPersisterInterface
 
     private $entityManager;
     private $repocont;
-    public function __construct(EntityManagerInterface $entityManager,ContratRepository $repocont, UserPasswordEncoderInterface $userPasswordEncoder)
+    private $rolrepo;
+    public function __construct(EntityManagerInterface $entityManager,ContratRepository $repocont, UserPasswordEncoderInterface $userPasswordEncoder, RoleRepository $rolrepo )
     {
         
         $this->entityManager = $entityManager;
         $this->repocont =  $repocont;
+        $this->rolrepo =  $rolrepo;
     }
 
     
@@ -49,12 +52,33 @@ class UserDataPersister implements DataPersisterInterface
     
         $texterme=$term[0]->getTerme();
        // dd($texterme);
+
         $nompersonne = $data->getPartenaire()->getusers()[0]->getNomcomplet();
         $nineaperson = $data->getPartenaire()->getNinea();
         $search=["#nomcomplet","#ninea"];
         $replace=[$nompersonne,$nineaperson];
 
         $newtexterme=str_replace ($search ,$replace , $texterme );
+
+        //recuperation des roles partenaire
+        $allrol=$this->rolrepo->findAll();
+        //recuperation du role partenaire 
+        $rolpart=$allrol[3];
+       // dd($rolpart);
+        //recuperation du user a qui appartient le compte
+        $usercom = $data->getPartenaire()->getusers()[0];
+     
+        
+       // dd($idpartenaire);
+//s'il s'agit d'un compte pour un nouveau partenaire
+       if($idpartenaire == null){
+   //donner au user le role partenaire
+
+        $usercom->setRole($rolpart);
+
+       }
+
+        
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();

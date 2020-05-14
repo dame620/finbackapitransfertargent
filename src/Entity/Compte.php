@@ -4,16 +4,25 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\CompteController;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
+ * @ApiFilter(SearchFilter::class, properties={"partenaire.ninea": "exact"})
  * @ApiResource(
+ * 
+ * 
+ * 
+ *   normalizationContext={"groups"={"readtransaction"}},
+ *   denormalizationContext={"groups"={"writetransaction"}},
  * 
  *   normalizationContext={"groups"={"readcompte"}},
  *   denormalizationContext={"groups"={"writecompte"}},
+ * 
  * 
  * collectionOperations={
  * "POST"={
@@ -45,12 +54,15 @@ class Compte
 {
     /**
      * @ORM\Id()
+     * @Groups({"readtransaction", "writetransaction"})
+     * @Groups({"readcompte", "writecompte"})
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @Groups({"readaffectation", "writeaffectation"})
      * @Groups({"readdepot", "writedepot"})
      * @Groups({"readcompte", "writecompte"})

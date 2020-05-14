@@ -65,6 +65,7 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Groups({"readtransaction", "writetransaction"})
      * @Groups({"readaffectation", "writeaffectation"})
      * @Groups({"readdepot", "writedepot"})
      * @Groups({"readcompte", "writecompte"})
