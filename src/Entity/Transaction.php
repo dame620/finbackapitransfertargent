@@ -7,10 +7,11 @@ use App\Controller\TransactionController;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
- * 
+ * @ApiFilter(DateFilter::class, properties={"datetrans"})
  * @ApiResource(
  * 
  *  normalizationContext={"groups"={"readtransaction"}},
