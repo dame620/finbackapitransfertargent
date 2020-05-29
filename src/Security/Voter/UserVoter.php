@@ -68,6 +68,12 @@ return in_array($attribute, ['EDIT', 'VIEW', 'POST'])
         throw new Exception("attention vous ne pouvez pas effectuer cette action en tant que caissier");
     }
    // dd($user->getRole()->getLibelle());
+   if(($user->getRole()->getLibelle()=== "PARTENAIRE") &&(
+      $subject->getRole()->getLibelle() == "USERPARTENAIRE" || $subject->getRole()->getLibelle() == "ADMINPARTENAIRE") 
+      &&($user->getPartenaire()->getId() != $subject->getPartenaire()->getId()))
+      {
+      throw new Exception("attention vous ne pouvez pas effectuer cette action en tant que admin");
+   }
     //dd($user->getRole()->getLibelle());
    // $makhou = ($user->getRoles()[0]);
   // dd($user->getRoles()[0]);
@@ -78,12 +84,19 @@ return in_array($attribute, ['EDIT', 'VIEW', 'POST'])
  }
 
  if(($user->getRole()->getLibelle()=== "PARTENAIRE") &&(
-    $subject->getRole()->getLibelle() == "SUPADMIN" || $subject->getRole()->getLibelle() == "ADMIN" 
+   $subject->getRole()->getLibelle() == "PARTENAIRE" || $subject->getRole()->getLibelle() == "SUPADMIN" || $subject->getRole()->getLibelle() == "ADMIN" 
     || $subject->getRole()->getLibelle() == "CAISSIER" 
  )){
     throw new Exception("attention vous ne pouvez pas effectuer cette action en tant que partenaire");
  }
-
+//admin partenaire 
+if(($user->getRole()->getLibelle()=== "ADMINPARTENAIRE") &&(
+   $subject->getRole()->getLibelle() == "PARTENAIRE" || $subject->getRole()->getLibelle() == "SUPADMIN" || $subject->getRole()->getLibelle() == "ADMIN" 
+    || $subject->getRole()->getLibelle() == "CAISSIER" || $subject->getRole()->getLibelle() == "ADMINPARTENAIRE"
+ )){
+    throw new Exception("attention vous ne pouvez pas effectuer cette action en tant que partenaire");
+ }
+//admin partenaire
 
  if(($user->getRole()->getLibelle()=== "ADMINPARTENAIRE") &&(
     $subject->getRole()->getLibelle() == "SUPADMIN" || $subject->getRole()->getLibelle() == "ADMIN" 
@@ -92,6 +105,13 @@ return in_array($attribute, ['EDIT', 'VIEW', 'POST'])
  )){
     throw new Exception("attention vous ne pouvez pas effectuer cette action en tant que partenaire");
  }
+//UN ADMINPARTENAIRE NE PEUT BLOQUER QUE LES USER PARTENAIRE DU MEME ENTREPRISE
+ if(($user->getRole()->getLibelle() == "ADMINPARTENAIRE") &&(
+   $subject->getRole()->getLibelle() == "USERPARTENAIRE") 
+   &&($user->getPartenaire()->getId() != $subject->getPartenaire()->getId()))
+   {
+   throw new Exception("attention vous ne pouvez pas effectuer cette action VS N'APPARTENEZ PAS AU MEME ENTREPRISE");
+}
 
        switch ($attribute) {
         case 'POST':

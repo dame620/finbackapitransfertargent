@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Osms;
 use DateTime;
 use Exception;
 use App\Entity\Transaction;
@@ -144,6 +145,34 @@ if($datejour<$datedebutaffectaion || $datejour>$datefinaffectaion){
          //recuperation dans le compte du montant a envoyer
          $comptuserconnecte->setSoldecompte($soldecomptinitial- $montantenvoi);
        // dd( $comptuserconnecte->getSoldecompte());
+
+          //debut orange sms
+
+$config = array(
+  'clientId' => '5y49xsv7zkGK8cZj6J4IM4c5j2FNOBhA',
+  'clientSecret' => 'qzgeEnI26NduRdKP'
+);
+
+$osms = new Osms($config);
+
+// retrieve an access token
+$response = $osms->getTokenFromConsumerKey();
+
+if (!empty($response['access_token'])) {
+  $senderAddress = 'tel:+221'.$data->getTeldestinataire();
+  $receiverAddress = 'tel:+221'.$data->getTeldestinataire();
+  $message = 'salue! '.$data->getNomdestinataire().' '.$data->getNomemmeteur().
+  ' PDG du nouveau service de transfert d argent GAGNEYONELMA vient de vous envoyez '. $montantenvoi.' FCFA vous pouvez le recupéré avec le code '. $data->getCode()
+;
+  $senderName = 'Optimus Prime';
+
+  $osms->sendSMS($senderAddress, $receiverAddress, $message, $senderName);
+} 
+else {
+  // error
+}
+    //fin orange  sms
+ 
       
        }
 

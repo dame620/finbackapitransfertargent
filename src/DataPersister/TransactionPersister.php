@@ -69,6 +69,7 @@ $sommeenvoisansfrai=$sommeenvoiplusfrai-$fraiseul;
        if($cnidest == null){
 
         return new JsonResponse($newtexterme);
+      ;
 
        } 
 

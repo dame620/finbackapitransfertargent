@@ -2,18 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class StatusController extends AbstractController
+class BlocageController extends AbstractController
 {
-    /**
-     * @Route("/api/users/status/{id}", name="status_desable", methods="GET"),
-     *        "access_control"="is_granted('EDIT', object)",
-     */
-    public function status($id,UserRepository $repo)
-    {
+
+           
+   
+        public function __invoke(User $data, $id,UserRepository $repo)
+         {
+    
         $user = $repo->find($id);
         $status = '';
         if($user->getIsActive() == true){
@@ -36,8 +37,5 @@ class StatusController extends AbstractController
         ];
         return $this->json($data, 200);
     }
-    
-
-
-
 }
+

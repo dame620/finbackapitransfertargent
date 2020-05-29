@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\UserController;
+use App\Controller\BlocageController;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
@@ -33,7 +34,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * 
  * "GETALLUSER"={
  * "method"="GET",
- *
+ * 
+ * 
  *   }
  * },
  * 
@@ -41,9 +43,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *    
  * "recuperationadmin"={
  *      "method"="GET",
- *      
+ *       "controller"=BlocageController::class,
+ *       "access_control"="is_granted('VIEW', object)",
  * },
- 
+ * 
  * "PUT"={
  * "access_control"="is_granted('EDIT', object)",
  
